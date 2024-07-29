@@ -1,17 +1,49 @@
 import { useState, useEffect } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
-import { multiply } from 'react-native-roll-the-dice';
+import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { TextureLoader } from 'three';
+import Dice from 'react-native-roll-the-dice';
+
+const diceTextures = [
+  require('./assets/one.png'),
+  require('./assets/two.png'),
+  require('./assets/three.png'),
+  require('./assets/four.png'),
+  require('./assets/five.png'),
+  require('./assets/six.png')
+];
 
 export default function App() {
-  const [result, setResult] = useState<number | undefined>();
+
+  const [textures, setTextures] = useState(null);
 
   useEffect(() => {
-    multiply(3, 7).then(setResult);
+    const loadTextures = async () => {
+      const loadedTextures = await Promise.all(diceTextures.map(texture => new TextureLoader().loadAsync(texture)));
+      if (loadedTextures) {
+        setTextures(loadedTextures);
+      }
+    };
+
+    loadTextures();
   }, []);
+
+  const CustomButton = (handleRoll: () => void) => (
+    <TouchableOpacity onPress={handleRoll} style={{ backgroundColor: 'blue', padding: 10 }}>
+      <Text style={{ color: 'white' }}>Custom Roll Button</Text>
+    </TouchableOpacity>
+  );
+
+  const handleDiceRoll = (winningFace: number) => {
+    console.log('Winning face:', winningFace);
+  };
+
+  if (!textures) {
+    return <View style={styles.container} />;
+  }
 
   return (
     <View style={styles.container}>
-      <Text>Result: {result}</Text>
+      <Dice height={400} width={400} textures={textures} onRoll={handleDiceRoll} renderCustomButton={CustomButton} />
     </View>
   );
 }
@@ -19,12 +51,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
-  box: {
-    width: 60,
-    height: 60,
-    marginVertical: 20,
+  glView: {
+    flex: 1,
   },
 });

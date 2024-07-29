@@ -176,5 +176,12 @@
   "create-react-native-library": {
     "type": "library",
     "version": "0.39.0"
+  },
+  "dependencies": {
+    "@react-three/drei": "^9.109.2",
+    "@react-three/fiber": "^8.16.8",
+    "@types/three": "^0.167.1",
+    "expo-gl": "^14.0.2",
+    "three": "^0.167.0"
   }
 }
